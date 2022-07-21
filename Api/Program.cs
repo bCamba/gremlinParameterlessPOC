@@ -1,4 +1,5 @@
 using Api;
+using ExRam.Gremlinq.Core.AspNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-DatabaseSettings? databaseSettings =
-    builder.Configuration.GetSection(DatabaseSettings.AppSettingsParameter).Get<DatabaseSettings>();
-builder.Services.AddSingleton(databaseSettings.ConfigureCosmosGremlinQuerySource());
+builder.Services.AddGremlinq(setup => setup
+    .UseCosmosDb<Vertex, Edge>(baseAuditableEntity => baseAuditableEntity.AccountId));
 
 var app = builder.Build();
 

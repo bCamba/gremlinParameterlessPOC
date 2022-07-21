@@ -17,9 +17,16 @@ public class DocumentController : ControllerBase
     [HttpGet(Name = "GetWeatherForecast")]
     public async Task<Document> Get()
     {
-        var test = new Document("test");
+        var test = new Document("test", 10);
         await _g.AddV(test)
             .FirstAsync();
+
+        var owns = new Owns(Guid.NewGuid());
+
+        await _g.V<Document>(test.Id)
+            .AddE(owns)
+            .To(_ => _.V(test.Id));
+        
         return test;
     }
 }
